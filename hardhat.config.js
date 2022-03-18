@@ -8,7 +8,10 @@ require("./tasks/PrintAccounts");
 module.exports = {
   defaultNetwork: "hardhat",
   networks: {
-    hardhat: {},
+    hardhat: {
+      gas: 2100000,
+      gasPrice: 130000000000,
+    },
     /* rinkeby: {
       url: "https://eth-rinkeby.alchemyapi.io/v2/123abc123abc123abc123abc123abcde",
       accounts: [privateKey1, privateKey2, ...]
