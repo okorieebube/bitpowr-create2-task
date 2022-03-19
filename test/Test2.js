@@ -13,7 +13,7 @@ describe("TronCustodialWalletFactory", function () {
     await tronCustodialWallet.deployed();
 
     TronCustodialWalletFactory = await ethers.getContractFactory(
-      "TronCustodialWalletFactory2"
+      "TronCustodialWalletFactory"
     );
     tronCustodialWalletFactory = await TronCustodialWalletFactory.deploy();
     await tronCustodialWalletFactory.deployed();

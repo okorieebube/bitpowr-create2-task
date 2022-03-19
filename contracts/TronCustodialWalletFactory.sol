@@ -20,25 +20,6 @@ contract TronCustodialWalletFactory {
         }
     }
 
-    function cloneWalletTest(address owner) public returns (address addr) {
-        // for (uint256 i = 0; i < count; i++) {
-        address payable clone = createClone(address(initialWallet));
-        TronCustodialWallet(clone).init(owner);
-        emit Created(clone);
-        return clone;
-        // }
-    }
-
-    function cloneWalletTest2(address owner, bytes32 salt)
-        public
-        returns (address addr)
-    {
-        address payable clone = createClone2(address(initialWallet), salt);
-        TronCustodialWallet(clone).init(owner);
-        emit Created(clone);
-        return clone;
-        // }
-    }
 
     function createClone(address target)
         internal
@@ -60,66 +41,34 @@ contract TronCustodialWalletFactory {
         }
     }
 
-    function createClone2(address target, bytes32 salt)
-        internal
-        returns (address payable addr)
+    function cloneDeterministic(address implementation, bytes32 salt)
+        external
+        returns (address instance)
     {
-        bytes20 targetBytes = bytes20(target);
         assembly {
-            let clone := mload(0x40)
+            let ptr := mload(0x40)
             mstore(
-                clone,
+                ptr,
                 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000
             )
-            mstore(add(clone, 0x14), targetBytes)
+            mstore(add(ptr, 0x14), shl(0x60, implementation))
             mstore(
-                add(clone, 0x28),
+                add(ptr, 0x28),
                 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000
             )
-            addr := create2(callvalue(), clone, 0x37, salt)
+            instance := create2(0, ptr, 0x37, salt)
         }
+        require(instance != address(0), "ERC1167: create2 failed");
     }
 
-    function predictCreate2Address(address target, uint256 salt)
-        public
-        view
-        returns (bytes memory retu)
-    {
-        bytes memory clone;
-        bytes20 targetBytes = bytes20(target);
-        assembly {
-            clone := mload(0x40)
-            mstore(
-                clone,
-                0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000
-            )
-            mstore(add(clone, 0x14), targetBytes)
-            mstore(
-                add(clone, 0x28),
-                0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000
-            )
-            retu := mload(clone)
-        }
-        return retu;
-        // bytes32 hash = keccak256(
-        //     abi.encodePacked(
-        //         bytes1(0xff),
-        //         address(this),
-        //         salt
-        //         keccak256(clone)
-        //     )
-        // );
-        // NOTE: cast last 20 bytes of hash to address
-        // return address(uint160(uint256(hash)));
-    }
-
-    // https://developers.tron.network/docs/differences-from-evm
-    // This will not necessarily work because TRON uses a different for concating address,
+    /**
+     * @dev Computes the address of a clone deployed using {Clones-cloneDeterministic}.
+     */
     function predictDeterministicAddress(
         address implementation,
         bytes32 salt,
         address deployer
-    ) public pure returns (address predicted) {
+    ) internal pure returns (address predicted) {
         assembly {
             let ptr := mload(0x40)
             mstore(
@@ -136,5 +85,16 @@ contract TronCustodialWalletFactory {
             mstore(add(ptr, 0x6c), keccak256(ptr, 0x37))
             predicted := keccak256(add(ptr, 0x37), 0x55)
         }
+    }
+
+    /**
+     * @dev Computes the address of a clone deployed using {Clones-cloneDeterministic}.
+     */
+    function predictDeterministicAddress(address implementation, bytes32 salt)
+        public
+        view
+        returns (address predicted)
+    {
+        return predictDeterministicAddress(implementation, salt, address(this));
     }
 }
