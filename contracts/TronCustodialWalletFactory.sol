@@ -76,14 +76,14 @@ contract TronCustodialWalletFactory {
                 add(clone, 0x28),
                 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000
             )
-            addr := create2(0, clone, 0x37, salt)
+            addr := create2(callvalue(), clone, 0x37, salt)
         }
     }
 
-    function predictCreate2Address(address target, bytes32 salt)
+    function predictCreate2Address(address target, uint256 salt)
         public
         view
-        returns (address)
+        returns (bytes memory retu)
     {
         bytes memory clone;
         bytes20 targetBytes = bytes20(target);
@@ -98,17 +98,19 @@ contract TronCustodialWalletFactory {
                 add(clone, 0x28),
                 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000
             )
+            retu := mload(clone)
         }
-        bytes32 hash = keccak256(
-            abi.encodePacked(
-                bytes1(0xff),
-                address(this),
-                salt,
-                keccak256(clone)
-            )
-        );
+        return retu;
+        // bytes32 hash = keccak256(
+        //     abi.encodePacked(
+        //         bytes1(0xff),
+        //         address(this),
+        //         salt
+        //         keccak256(clone)
+        //     )
+        // );
         // NOTE: cast last 20 bytes of hash to address
-        return address(uint160(uint256(hash)));
+        // return address(uint160(uint256(hash)));
     }
 
     // https://developers.tron.network/docs/differences-from-evm
