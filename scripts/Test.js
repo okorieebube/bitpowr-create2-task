@@ -19,7 +19,7 @@ describe("TronCustodialWalletFactory", function () {
     await tronCustodialWalletFactory.deployed();
   });
     it("should deploy with createClone", async function () {
-      console.log(hexZeroPad(hexlify(777), 32))
+      console.log(hexZeroPad(hexlify(65), 32))
     let result = await tronCustodialWalletFactory.callStatic.getByteCode(
       tronCustodialWallet.address,
       hexZeroPad(hexlify(777), 32),
