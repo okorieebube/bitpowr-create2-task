@@ -19,7 +19,7 @@ describe("TronCustodialWalletFactory", function () {
     await tronCustodialWalletFactory.deployed();
   });
   it("should deploy with createClone2", async function () {
-    // cloneDeterministic(address implementation, bytes32 salt)
+    console.log(hexZeroPad(hexlify(778), 32))
     let result = await tronCustodialWalletFactory.callStatic.cloneDeterministic(
         tronCustodialWallet.address,
       hexZeroPad(hexlify(777), 32)

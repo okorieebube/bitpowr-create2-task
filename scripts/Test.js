@@ -18,13 +18,15 @@ describe("TronCustodialWalletFactory", function () {
     tronCustodialWalletFactory = await TronCustodialWalletFactory.deploy();
     await tronCustodialWalletFactory.deployed();
   });
-  /*   it("should deploy with createClone", async function () {
-    let result = await tronCustodialWalletFactory.callStatic.cloneWalletTest(
-      alice.address
+    it("should deploy with createClone", async function () {
+      console.log(hexZeroPad(hexlify(777), 32))
+    let result = await tronCustodialWalletFactory.callStatic.getByteCode(
+      tronCustodialWallet.address,
+      hexZeroPad(hexlify(777), 32),
     );
-    console.log(result);
-  }); */
-  it("should deploy with createClone2", async function () {
+    console.log("cloneDeterministic:", result);
+  });
+  /* it("should deploy with createClone2", async function () {
     let result = await tronCustodialWalletFactory.callStatic.cloneWalletTest2(
       alice.address,
       hexZeroPad(hexlify(777), 32)
@@ -47,5 +49,5 @@ describe("TronCustodialWalletFactory", function () {
         hexZeroPad(hexlify(777), 32),
       );
     console.log("predictCreate2Address:",result);
-  });
+  }); */
 });
