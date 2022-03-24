@@ -1,6 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-ethers");
 require("./tasks/PrintAccounts");
+require("dotenv").config();
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -12,10 +13,10 @@ module.exports = {
       gas: 2100000,
       gasPrice: 130000000000,
     },
-    /* rinkeby: {
-      url: "https://eth-rinkeby.alchemyapi.io/v2/123abc123abc123abc123abc123abcde",
-      accounts: [privateKey1, privateKey2, ...]
-    } */
+    rinkeby: {
+      url: "https://eth-rinkeby.alchemyapi.io/v2/4tbQ72Jsb1zLMcN2-19FN7TwcJee5wu4",
+      accounts: [process.env.PRIVATE_KEY]
+    }
   },
   etherscan: {
     // Your API key for Etherscan
@@ -42,6 +43,6 @@ module.exports = {
     },
   },
   mocha: {
-    timeout: 20000,
+    timeout: 200000,
   },
 };
